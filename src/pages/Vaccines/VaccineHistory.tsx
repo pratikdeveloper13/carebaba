@@ -9,6 +9,7 @@ import { ConfirmDialog } from '../../components/common/ConfirmDialog'
 import { VaccineCard } from '../../components/vaccine/VaccineCard'
 import { useTranslation } from '../../hooks/useSettings'
 import { useToast } from '../../hooks/useToast'
+import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import { getCompletedVaccines, deleteVaccine, reopenVaccine } from '../../services/vaccine/vaccineService'
 import type { VaccineRecord } from '../../types/vaccine'
 
@@ -24,15 +25,22 @@ export function VaccineHistory() {
   const [error, setError] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<VaccineRecord | null>(null)
 
-  const load = () => {
-    setLoading(true)
-    setError(false)
+  const load = (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setLoading(true)
+      setError(false)
+    }
     getCompletedVaccines()
       .then(setVaccines)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      .catch(() => {
+        if (!opts?.silent) setError(true)
+      })
+      .finally(() => {
+        if (!opts?.silent) setLoading(false)
+      })
   }
-  useEffect(load, [])
+  useEffect(() => load(), [])
+  useSyncRefresh(() => load({ silent: true }))
 
   const handleDelete = async () => {
     if (!deleteTarget) return

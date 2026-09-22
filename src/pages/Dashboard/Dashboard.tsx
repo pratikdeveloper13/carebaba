@@ -7,6 +7,7 @@ import { ErrorBanner } from '../../components/common/ErrorBanner'
 import { ReadingSummaryCard } from '../../components/dashboard/ReadingSummaryCard'
 import { NextVaccineCard } from '../../components/dashboard/NextVaccineCard'
 import { useTranslation } from '../../hooks/useSettings'
+import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import { getTodaySnapshot } from '../../services/health/healthService'
 import type { TodaySnapshot } from '../../services/health/healthService'
 import { getNextVaccine } from '../../services/vaccine/vaccineService'
@@ -29,19 +30,29 @@ export function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
-  const load = () => {
-    setLoading(true)
-    setError(false)
+  // `silent` skips the loading spinner / error banner — used when a
+  // background sync completes after the page has already rendered, so new
+  // data from another device appears without a jarring re-flash.
+  const load = (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setLoading(true)
+      setError(false)
+    }
     Promise.all([getTodaySnapshot(), getNextVaccine()])
       .then(([s, v]) => {
         setSnapshot(s)
         setNextVaccine(v)
       })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      .catch(() => {
+        if (!opts?.silent) setError(true)
+      })
+      .finally(() => {
+        if (!opts?.silent) setLoading(false)
+      })
   }
 
-  useEffect(load, [])
+  useEffect(() => load(), [])
+  useSyncRefresh(() => load({ silent: true }))
 
   return (
     <PageContainer>

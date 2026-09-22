@@ -10,6 +10,7 @@ import { VaccineCard } from '../../components/vaccine/VaccineCard'
 import { CompleteVaccineDialog } from '../../components/vaccine/CompleteVaccineDialog'
 import { useTranslation } from '../../hooks/useSettings'
 import { useToast } from '../../hooks/useToast'
+import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import { getUpcomingVaccines, deleteVaccine } from '../../services/vaccine/vaccineService'
 import type { VaccineRecord } from '../../types/vaccine'
 
@@ -25,16 +26,23 @@ export function Vaccines() {
   const [deleteTarget, setDeleteTarget] = useState<VaccineRecord | null>(null)
   const [completeTarget, setCompleteTarget] = useState<VaccineRecord | null>(null)
 
-  const load = () => {
-    setLoading(true)
-    setError(false)
+  const load = (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setLoading(true)
+      setError(false)
+    }
     getUpcomingVaccines()
       .then(setVaccines)
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      .catch(() => {
+        if (!opts?.silent) setError(true)
+      })
+      .finally(() => {
+        if (!opts?.silent) setLoading(false)
+      })
   }
 
-  useEffect(load, [])
+  useEffect(() => load(), [])
+  useSyncRefresh(() => load({ silent: true }))
 
   const handleDelete = async () => {
     if (!deleteTarget) return

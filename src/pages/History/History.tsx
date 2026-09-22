@@ -12,6 +12,7 @@ import { HistoryItemRow } from '../../components/history/HistoryItemRow'
 import type { HistoryEntry } from '../../components/history/HistoryItemRow'
 import { useTranslation } from '../../hooks/useSettings'
 import { useToast } from '../../hooks/useToast'
+import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import {
   getSugarReadingsInRange,
   deleteSugarReading,
@@ -73,9 +74,11 @@ export function History() {
 
   const { from, to } = rangeToDates(range, customFrom, customTo)
 
-  const load = () => {
-    setLoading(true)
-    setError(false)
+  const load = (opts?: { silent?: boolean }) => {
+    if (!opts?.silent) {
+      setLoading(true)
+      setError(false)
+    }
     Promise.all([
       typeFilter === 'all' || typeFilter === 'sugar' ? getSugarReadingsInRange(from, to) : Promise.resolve([]),
       typeFilter === 'all' || typeFilter === 'bp' ? getBpReadingsInRange(from, to) : Promise.resolve([]),
@@ -89,11 +92,16 @@ export function History() {
         ]
         setEntries(merged)
       })
-      .catch(() => setError(true))
-      .finally(() => setLoading(false))
+      .catch(() => {
+        if (!opts?.silent) setError(true)
+      })
+      .finally(() => {
+        if (!opts?.silent) setLoading(false)
+      })
   }
 
   useEffect(load, [range, typeFilter, from, to])
+  useSyncRefresh(() => load({ silent: true }))
 
   const grouped = useMemo(() => groupByDate(entries), [entries])
 
