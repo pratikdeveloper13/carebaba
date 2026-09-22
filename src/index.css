@@ -1,0 +1,78 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans:
+    'Noto Sans', 'Noto Sans Devanagari', 'Segoe UI', system-ui, -apple-system, sans-serif;
+
+  /* Brand / primary action color — calm teal, high contrast on white */
+  --color-brand-50: #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+
+  /* Health-category accent colors, used consistently across the app */
+  --color-sugar: #dc2626; /* red — blood drop */
+  --color-sugar-bg: #fef2f2;
+  --color-bp: #db2777; /* pink/rose — heart */
+  --color-bp-bg: #fdf2f8;
+  --color-spo2: #2563eb; /* blue — lungs */
+  --color-spo2-bg: #eff6ff;
+  --color-vaccine: #7c3aed; /* violet — syringe */
+  --color-vaccine-bg: #f5f3ff;
+
+  --color-warn: #b45309;
+  --color-warn-bg: #fffbeb;
+  --color-danger: #b91c1c;
+  --color-danger-bg: #fef2f2;
+  --color-ok: #15803d;
+  --color-ok-bg: #f0fdf4;
+}
+
+:root {
+  color-scheme: light;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: var(--font-sans);
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Elderly-friendly baseline: larger default type, generous tap targets */
+html.large-text {
+  font-size: 19px;
+}
+
+button,
+a,
+input,
+select,
+textarea {
+  font-family: inherit;
+}
+
+/* Visible, high-contrast focus ring for keyboard users */
+:focus-visible {
+  outline: 3px solid var(--color-brand-700);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
