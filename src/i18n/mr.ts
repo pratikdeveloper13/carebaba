@@ -189,6 +189,14 @@ const mr: Record<TranslationKey, string> = {
   'trends.recentValues': 'अलीकडील नोंदी',
 
   // Settings
+  'status.good': 'योग्य श्रेणीत',
+  'status.watch': 'सीमारेषेवर',
+  'status.attention': 'श्रेणीबाहेर',
+  'status.disclaimer': 'हे रंग केवळ सर्वसाधारण संदर्भ श्रेणी दर्शवतात — हे निदान नाही. कृपया नेहमी तुमच्या डॉक्टरांच्या विशिष्ट सल्ल्याचे आणि लक्ष्यांचे पालन करा.',
+
+  'settings.colorIndicators': 'रंग निर्देशक',
+  'settings.colorIndicatorsHint': 'सर्वसाधारण संदर्भ श्रेणीनुसार नोंदींजवळ हिरवे / पिवळे / लाल संकेत दाखवा.',
+
   'settings.sync': 'डिव्हाइसेसमध्ये सिंक',
   'settings.syncHint': 'हे अ‍ॅप वापरणाऱ्या इतर डिव्हाइसेसशी नोंदी आणि लसीकरण आपोआप शेअर करते.',
   'settings.syncNow': 'आता सिंक करा',

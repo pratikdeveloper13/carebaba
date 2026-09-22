@@ -1,6 +1,9 @@
-import { useTranslation } from '../../hooks/useSettings'
+import { useSettings, useTranslation } from '../../hooks/useSettings'
+import { StatusDot } from '../common/StatusDot'
 import { formatTimeFriendly } from '../../utils/date'
 import { sugarTypeLabelKeys } from '../../utils/labels'
+import { getSugarLevel, getBpLevel, getSpo2Level } from '../../utils/readingStatus'
+import type { ReadingLevel } from '../../utils/readingStatus'
 import type { SugarReading, BloodPressureReading, Spo2Reading } from '../../types/health'
 
 export type HistoryEntry =
@@ -22,10 +25,17 @@ const accent: Record<HistoryEntry['kind'], string> = {
 
 const icons: Record<HistoryEntry['kind'], string> = { sugar: '🩸', bp: '❤️', spo2: '🫁' }
 
+function levelFor(entry: HistoryEntry): ReadingLevel {
+  if (entry.kind === 'sugar') return getSugarLevel(entry.record.value, entry.record.readingType)
+  if (entry.kind === 'bp') return getBpLevel(entry.record.systolic, entry.record.diastolic)
+  return getSpo2Level(entry.record.spo2)
+}
+
 /** One history row: time, the reading's primary value, secondary detail,
  * and large Edit/Delete tap targets. */
 export function HistoryItemRow({ entry, onEdit, onDelete }: HistoryItemRowProps) {
   const { t, language } = useTranslation()
+  const { colorIndicatorsEnabled } = useSettings()
 
   let primary: string
   let secondary: string
@@ -50,7 +60,10 @@ export function HistoryItemRow({ entry, onEdit, onDelete }: HistoryItemRowProps)
       </span>
       <div className="min-w-0 flex-1">
         <p className="text-sm font-semibold text-slate-500">{formatTimeFriendly(entry.record.time, language)}</p>
-        <p className="text-lg font-extrabold text-slate-900">{primary}</p>
+        <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+          <p className="text-lg font-extrabold text-slate-900">{primary}</p>
+          {colorIndicatorsEnabled && <StatusDot level={levelFor(entry)} />}
+        </div>
         {secondary && <p className="text-sm text-slate-600">{secondary}</p>}
         {entry.record.notes && <p className="mt-1 text-sm italic text-slate-500">{entry.record.notes}</p>}
       </div>

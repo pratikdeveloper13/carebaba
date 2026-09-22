@@ -15,7 +15,15 @@ import { APP_VERSION } from '../../utils/appInfo'
 
 export function Settings() {
   const { t } = useTranslation()
-  const { settings, language, setLanguage, largeText, setLargeText } = useSettings()
+  const {
+    settings,
+    language,
+    setLanguage,
+    largeText,
+    setLargeText,
+    colorIndicatorsEnabled,
+    setColorIndicatorsEnabled,
+  } = useSettings()
   const { showToast } = useToast()
   const syncStatus = useSyncStatus()
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -148,6 +156,20 @@ export function Settings() {
                 onChange={(e) => setLargeText(e.target.checked)}
                 className="h-7 w-7 shrink-0 accent-brand-700"
                 aria-label={t('settings.largeText')}
+              />
+            </label>
+
+            <label className="mt-3 flex min-h-[56px] cursor-pointer items-center justify-between gap-3 rounded-2xl border-2 border-slate-200 px-4 py-3">
+              <span>
+                <span className="block text-base font-bold text-slate-800">{t('settings.colorIndicators')}</span>
+                <span className="block text-sm text-slate-500">{t('settings.colorIndicatorsHint')}</span>
+              </span>
+              <input
+                type="checkbox"
+                checked={colorIndicatorsEnabled}
+                onChange={(e) => setColorIndicatorsEnabled(e.target.checked)}
+                className="h-7 w-7 shrink-0 accent-brand-700"
+                aria-label={t('settings.colorIndicators')}
               />
             </label>
           </Card>

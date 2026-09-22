@@ -6,7 +6,7 @@ import { LoadingSpinner } from '../../components/common/LoadingSpinner'
 import { ErrorBanner } from '../../components/common/ErrorBanner'
 import { ReadingSummaryCard } from '../../components/dashboard/ReadingSummaryCard'
 import { NextVaccineCard } from '../../components/dashboard/NextVaccineCard'
-import { useTranslation } from '../../hooks/useSettings'
+import { useSettings, useTranslation } from '../../hooks/useSettings'
 import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import { getTodaySnapshot } from '../../services/health/healthService'
 import type { TodaySnapshot } from '../../services/health/healthService'
@@ -14,6 +14,7 @@ import { getNextVaccine } from '../../services/vaccine/vaccineService'
 import type { VaccineRecord } from '../../types/vaccine'
 import { formatDateLong, formatTimeFriendly } from '../../utils/date'
 import { sugarTypeLabelKeys } from '../../utils/labels'
+import { getSugarLevel, getBpLevel, getSpo2Level } from '../../utils/readingStatus'
 import type { TranslationKey } from '../../i18n'
 
 function greetingKey(): TranslationKey {
@@ -25,6 +26,7 @@ function greetingKey(): TranslationKey {
 
 export function Dashboard() {
   const { t, language } = useTranslation()
+  const { colorIndicatorsEnabled } = useSettings()
   const [snapshot, setSnapshot] = useState<TodaySnapshot | null>(null)
   const [nextVaccine, setNextVaccine] = useState<VaccineRecord | undefined>(undefined)
   const [loading, setLoading] = useState(true)
@@ -91,6 +93,11 @@ export function Dashboard() {
             addTo="/add/sugar"
             addLabel={`+ ${t('sugar.title')}`}
             accentClassName="bg-sugar-bg text-sugar"
+            level={
+              colorIndicatorsEnabled && snapshot.latestSugar
+                ? getSugarLevel(snapshot.latestSugar.value, snapshot.latestSugar.readingType)
+                : undefined
+            }
           />
 
           <ReadingSummaryCard
@@ -120,6 +127,11 @@ export function Dashboard() {
             addTo="/add/bp"
             addLabel={`+ ${t('bp.title')}`}
             accentClassName="bg-bp-bg text-bp"
+            level={
+              colorIndicatorsEnabled && snapshot.latestBp
+                ? getBpLevel(snapshot.latestBp.systolic, snapshot.latestBp.diastolic)
+                : undefined
+            }
           />
 
           <ReadingSummaryCard
@@ -147,6 +159,7 @@ export function Dashboard() {
             addTo="/add/spo2"
             addLabel={`+ ${t('spo2.title')}`}
             accentClassName="bg-spo2-bg text-spo2"
+            level={colorIndicatorsEnabled && snapshot.latestSpo2 ? getSpo2Level(snapshot.latestSpo2.spo2) : undefined}
           />
 
           <NextVaccineCard vaccine={nextVaccine} />
@@ -159,7 +172,7 @@ export function Dashboard() {
           </Link>
 
           <p className="mt-1 rounded-2xl bg-slate-100 px-4 py-3 text-center text-sm text-slate-500">
-            {t('dashboard.disclaimer')}
+            {colorIndicatorsEnabled ? t('status.disclaimer') : t('dashboard.disclaimer')}
           </p>
         </div>
       )}

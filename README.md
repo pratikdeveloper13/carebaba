@@ -359,3 +359,13 @@ This app is a personal record-keeping diary. It does not diagnose
 conditions, does not recommend medication changes, and does not replace
 medical advice. The dashboard always shows: *"Please follow your doctor's
 instructions for interpreting your readings."*
+
+**Color indicators** (Dashboard + History) show each reading against
+general adult reference ranges (`src/utils/readingStatus.ts`) as a green
+"In range" / amber "Borderline" / red "Outside range" — always paired
+with text, never color alone. These are widely published general bands
+(the same kind of thing printed on a home BP monitor), **not a
+personalized target** — a doctor may set a different target for a
+specific person, and the app says so right next to the colors. The
+feature can be turned off entirely in **Settings → Display → Color
+Indicators**.

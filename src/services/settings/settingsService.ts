@@ -30,8 +30,12 @@ function cacheLanguage(language: Language) {
 export async function getSettings(): Promise<AppSettings> {
   const existing = await getRecord(STORE.settings, SETTINGS_KEY)
   if (existing) {
-    cacheLanguage(existing.language)
-    return existing
+    // Merge over defaults so a settings record saved by an older version of
+    // the app (missing a field added since) still gets a sensible value
+    // instead of `undefined`.
+    const merged: AppSettings = { ...DEFAULT_SETTINGS, ...existing }
+    cacheLanguage(merged.language)
+    return merged
   }
   await putRecord(STORE.settings, DEFAULT_SETTINGS)
   return DEFAULT_SETTINGS

@@ -10,7 +10,7 @@ import { HistoryFilters } from '../../components/history/HistoryFilters'
 import type { HistoryRange, HistoryTypeFilter } from '../../components/history/HistoryFilters'
 import { HistoryItemRow } from '../../components/history/HistoryItemRow'
 import type { HistoryEntry } from '../../components/history/HistoryItemRow'
-import { useTranslation } from '../../hooks/useSettings'
+import { useSettings, useTranslation } from '../../hooks/useSettings'
 import { useToast } from '../../hooks/useToast'
 import { useSyncRefresh } from '../../hooks/useSyncRefresh'
 import {
@@ -58,6 +58,7 @@ function groupByDate(entries: HistoryEntry[]): { date: string; entries: HistoryE
 
 export function History() {
   const { t, language } = useTranslation()
+  const { colorIndicatorsEnabled } = useSettings()
   const { showToast } = useToast()
   const navigate = useNavigate()
 
@@ -179,6 +180,11 @@ export function History() {
                 </div>
               </div>
             ))}
+          {!loading && !error && grouped.length > 0 && colorIndicatorsEnabled && (
+            <p className="rounded-2xl bg-slate-100 px-4 py-3 text-center text-sm text-slate-500">
+              {t('status.disclaimer')}
+            </p>
+          )}
         </div>
       </PageContainer>
 

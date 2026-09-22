@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { StatusDot } from '../common/StatusDot'
+import type { ReadingLevel } from '../../utils/readingStatus'
 
 interface ReadingSummaryCardProps {
   icon: string
@@ -10,6 +12,8 @@ interface ReadingSummaryCardProps {
   addTo: string
   addLabel: string
   accentClassName: string
+  /** Omit to hide the color indicator entirely (e.g. user turned it off in Settings). */
+  level?: ReadingLevel
 }
 
 /** Dashboard tile for one reading type's "today" snapshot — latest value
@@ -24,6 +28,7 @@ export function ReadingSummaryCard({
   addTo,
   addLabel,
   accentClassName,
+  level,
 }: ReadingSummaryCardProps) {
   return (
     <div className="rounded-3xl bg-white p-5 shadow-sm ring-1 ring-slate-100">
@@ -37,7 +42,10 @@ export function ReadingSummaryCard({
         <div className="min-w-0 flex-1">
           <p className="text-base font-bold text-slate-800">{title}</p>
           {valueText ? (
-            <p className="truncate text-2xl font-extrabold text-slate-900">{valueText}</p>
+            <div className="flex flex-wrap items-baseline gap-x-3 gap-y-0.5">
+              <p className="truncate text-2xl font-extrabold text-slate-900">{valueText}</p>
+              {level && <StatusDot level={level} />}
+            </div>
           ) : (
             <p className="text-base text-slate-500">{emptyText}</p>
           )}

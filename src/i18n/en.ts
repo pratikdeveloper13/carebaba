@@ -188,6 +188,16 @@ const en = {
   'trends.spo2Chart': 'SpO2 Trend',
   'trends.recentValues': 'Recent Values',
 
+  // Reading status (general reference ranges — see readingStatus.ts)
+  'status.good': 'In range',
+  'status.watch': 'Borderline',
+  'status.attention': 'Outside range',
+  'status.disclaimer': "These colors show general reference ranges only — they are not a diagnosis. Always follow your doctor's specific advice and targets.",
+
+  // Settings — Display: color indicators
+  'settings.colorIndicators': 'Color Indicators',
+  'settings.colorIndicatorsHint': 'Show green / yellow / red hints next to readings, based on general reference ranges.',
+
   // Settings — Sync
   'settings.sync': 'Sync Across Devices',
   'settings.syncHint': 'Automatically shares readings and vaccines with other devices using this app link.',

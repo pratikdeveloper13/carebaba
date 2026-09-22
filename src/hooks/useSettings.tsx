@@ -13,6 +13,8 @@ interface SettingsContextValue {
   setLanguage: (language: Language) => Promise<void>
   largeText: boolean
   setLargeText: (largeText: boolean) => Promise<void>
+  colorIndicatorsEnabled: boolean
+  setColorIndicatorsEnabled: (enabled: boolean) => Promise<void>
   t: (key: TranslationKey, vars?: Record<string, string | number>) => string
 }
 
@@ -74,6 +76,16 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
     }
   }
 
+  const setColorIndicatorsEnabled = async (colorIndicatorsEnabled: boolean) => {
+    setSettings((prev) => ({ ...prev, colorIndicatorsEnabled }))
+    try {
+      const updated = await persistSettings({ colorIndicatorsEnabled })
+      setSettings(updated)
+    } catch {
+      // Optimistic value stays; the setting will simply not survive reload.
+    }
+  }
+
   const t = (key: TranslationKey, vars?: Record<string, string | number>) =>
     translate(settings.language, key, vars)
 
@@ -86,6 +98,8 @@ export function SettingsProvider({ children }: { children: ReactNode }) {
         setLanguage,
         largeText: settings.largeText,
         setLargeText,
+        colorIndicatorsEnabled: settings.colorIndicatorsEnabled,
+        setColorIndicatorsEnabled,
         t,
       }}
     >
